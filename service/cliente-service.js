@@ -1,46 +1,57 @@
-const listaClientes = () => {
-    return fetch(`http://localhost:3000/profile`).then(resposta => {
-        return resposta.json()
-    })
+const listaClientes = async () => {
+    const resposta = await fetch(`http://localhost:3000/profile`)
+    return await resposta.json()
 }
 
-const criaCliente = (nome, email) => {
-    return fetch(`http://localhost:3000/profile`, {
+const criaCliente = async (nome, email) => {
+    const resposta = await fetch(`http://localhost:3000/profile`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(
-            {nome: nome, email: email}
+            { nome: nome, email: email }
         )
-    }).then(resposta => {
-        return resposta.body
     })
+    if (resposta.body) {
+        return await resposta.json()
+    }
+    throw new Error("Não foi possivel criar o cliente!")
 }
 
 const removeCliente = (id) => {
-    return fetch(`http://localhost:3000/profile/${id}`, {method: 'DELETE'})
+    const resposta = fetch(`http://localhost:3000/profile/${id}`, {method: 'DELETE'})
+    if (!resposta.ok) {
+        return resposta.body
+    }
+    throw new Error("Não foi possivel deletar o cliente!")
+    
 }
 
 
-const detalhaCliente = (id) => {
-    return fetch(`http://localhost:3000/profile/${id}`).then(resposta => {
-        return resposta.json()
-    })
+const detalhaCliente = async (id) => {
+    const resposta = await fetch(`http://localhost:3000/profile/${id}`)
+    if (resposta.ok) {
+        return await resposta.json()
+    }
+    throw new Error("Não foi possivel listar os clientes!")
 }
 
-const atualizaCliente = (id, nome, email) => {
-    return fetch(`http://localhost:3000/profile/${id}`, {
+const atualizaCliente = async (id, nome, email) => {
+    const resposta = await fetch(`http://localhost:3000/profile/${id}`, {
         method: "PUT",
         headers: {
             'Content-type': 'application/json'
         },
         body: JSON.stringify(
-            {nome: nome, email: email}
+            { nome: nome, email: email }
         )
-    }).then(resposta => {
-        return resposta.json()
     })
+    if (resposta.ok) {
+        return await resposta.json()
+    }
+    throw new Error("Não foi possivel atualizar o cliente!")
+    
 }
 
 export const clienteService = {
